@@ -1,0 +1,11 @@
+--- mailpreparation.php.orig	2025-04-01 02:46:28.273543642 +0000
++++ mailpreparation.php	2025-04-01 02:47:27.339936271 +0000
+@@ -290,6 +290,7 @@
+             }
+             $this->conf->set_opt("internalMailer", false);
+             error_log("Mail " . $headers["to"] . " failed to send, falling back (status {$status})");
++            error_log($htext . $eol . $qpe_body);
+         }
+ 
+         // then try `mail` function
+

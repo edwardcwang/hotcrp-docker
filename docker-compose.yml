@@ -1,0 +1,42 @@
+services:
+  hotcrp:
+    image: hotcrp-image
+    depends_on: ['db']
+    volumes:
+      - ./options.php:/opt/hotcrp/conf/options.php:ro
+      - ./user.ini:/opt/hotcrp.user.ini:ro
+      - ./msmtprc:/etc/msmtprc:ro
+    environment:
+      - MARIADB_DBNAME=hotcrp
+      - MARIADB_HOST=db
+      - MARIADB_USER=user
+      - MARIADB_PASSWORD=hotcrp_mariadb_password_here
+
+  db:
+    image: mariadb:11.6
+    volumes:
+      - 'hotcrp_data:/var/lib/mysql'
+    # As per the HotCRP README
+    command: --max_allowed_packet=32M
+    environment:
+      - MARIADB_USER=user
+      - MARIADB_PASSWORD=hotcrp_mariadb_password_here
+      - MARIADB_DATABASE=hotcrp
+      - MYSQL_ROOT_PASSWORD=mysql_root_password_here
+
+  caddy:
+    restart: always
+    image: caddy:2.9.1-alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy_certificates:/data/caddy/certificates
+    environment:
+      - CADDY_DOMAIN=hotcrp.localdomain
+    depends_on: ['hotcrp']
+
+volumes:
+  hotcrp_data:
+    external: true

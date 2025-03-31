@@ -1,0 +1,8 @@
+${CADDY_DOMAIN} {
+  reverse_proxy http://hotcrp:80
+  #tls /opt/certs/fullchain.pem /opt/certs/privkey.pem
+  tls {
+    #ca https://acme-v02.api.example.org/directory
+  }
+}
+
